@@ -1,10 +1,20 @@
 package app
 
 import (
-	"fmt"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/config"
+	"github.com/SiyovushAbdulloev/gophermart/pkg/httpserver"
 )
 
 func Main(cfg *config.Config) {
-	fmt.Println(cfg)
+	httpServer := httpserver.New(httpserver.WithAddress(cfg.ServerAddr))
+
+	go func() {
+		err := httpServer.Run()
+
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	select {}
 }
