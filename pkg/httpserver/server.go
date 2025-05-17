@@ -17,7 +17,7 @@ func New(opts ...Option) *Server {
 		opt(server)
 	}
 
-	server.App = gin.New()
+	server.App = gin.Default()
 
 	return server
 }

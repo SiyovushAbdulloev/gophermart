@@ -21,4 +21,16 @@ services:
       - "8001:8001"
     env_file:
       - .env
+    depends_on:
+      - postgres
     command: ["air"]
+
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "gophermart"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - "./db-data/pgsql:/var/lib/postgresql/data"
