@@ -25,9 +25,11 @@ type Config struct {
 	DatabaseUsername    string `env:"DB_USERNAME,required"`
 	DatabasePassword    string `env:"DB_PASSWORD,required"`
 	DatabaseURI         string `env:"DB_URI,required"`
-	DatabaseMaxConn     string `env:"DB_MAX_CONN,required"`
-	DatabaseMaxAttempts string `env:"DB_MAX_ATTEMPTS,required"`
-	DatabaseMaxDelay    string `env:"DB_MAX_DELAY,required"`
+	DatabaseMaxConn     int    `env:"DB_MAX_CONN,required"`
+	DatabaseMaxAttempts int    `env:"DB_MAX_ATTEMPTS,required"`
+	DatabaseMaxDelay    int    `env:"DB_MAX_DELAY,required"`
+	JWTSecretKey        string `env:"JWT_SECRET_KEY,required"`
+	JWTExpire           int    `env:"JWT_EXPIRE,required"`
 }
 
 func New() (*Config, error) {
