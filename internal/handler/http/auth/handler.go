@@ -51,3 +51,29 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		"token": token,
 	})
 }
+
+func (h *AuthHandler) Login(ctx *gin.Context) {
+	var u user.User
+
+	body, err := io.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = easyjson.Unmarshal(body, &u)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := h.uc.Login(&u)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
+}

@@ -7,4 +7,5 @@ import (
 
 func DefineAuthRoutes(app *gin.Engine, handler *auth.AuthHandler) {
 	app.POST("/register", handler.Register)
+	app.POST("/login", handler.Login)
 }

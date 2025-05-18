@@ -2,8 +2,10 @@ package auth
 
 import (
 	"fmt"
+	"github.com/SiyovushAbdulloev/gophermart/internal/entity"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/repository"
+	"github.com/SiyovushAbdulloev/gophermart/pkg/utils/hash"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/utils/jwt"
 	"time"
 )
@@ -39,4 +41,22 @@ func (au *AuthUsecase) Register(user user.User) (string, error) {
 
 func (au *AuthUsecase) GetUserByEmail(email string) (*user.User, error) {
 	return au.repo.GetUserByEmail(email)
+}
+
+func (au *AuthUsecase) Login(user *user.User) (string, error) {
+	u, err := au.repo.GetUserByEmail(user.Email)
+	if err != nil {
+		return "", entity.NotFoundErr
+	}
+
+	if !hash.CheckPassword(user.Password, u.Password) {
+		return "", entity.PasswordNotMatchErr
+	}
+
+	token, err := jwt.JWTString(u.Id, au.jwtSecret, au.jwtExpire)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

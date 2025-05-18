@@ -64,7 +64,7 @@ func (repo *AuthRepository) GetUserByEmail(email string) (*user.User, error) {
 	defer tx.Rollback(ctx)
 
 	query := repo.DB.Builder.
-		Select("id, email").
+		Select("id, email, password").
 		From("users").
 		Where(squirrel.Eq{"email": email})
 
@@ -75,11 +75,11 @@ func (repo *AuthRepository) GetUserByEmail(email string) (*user.User, error) {
 
 	var u user.User
 
-	err = tx.QueryRow(context.Background(), sql, args...).Scan(&u.Id, &u.Email)
+	err = tx.QueryRow(context.Background(), sql, args...).Scan(&u.Id, &u.Email, &u.Password)
 	if err != nil {
 		fmt.Println(err.Error())
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil
+			return nil, err
 		}
 		return nil, err
 	}
