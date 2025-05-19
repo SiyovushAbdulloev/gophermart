@@ -21,4 +21,5 @@ func DefineOrderRoutes(app *gin.Engine, handler *order.OrderHandler, secret stri
 	group.Use(middleware.Authenticate(secret, repository))
 
 	group.POST("/", handler.Store)
+	group.GET("/", handler.List)
 }

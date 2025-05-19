@@ -77,3 +77,45 @@ func (repo *OrderRepository) GetOrderById(id int) (*order.Order, error) {
 
 	return &o, nil
 }
+
+func (repo *OrderRepository) List(userId int) ([]order.Order, error) {
+	ctx := context.Background()
+	tx, err := repo.DB.Pool.Begin(ctx)
+	if err != nil {
+		return []order.Order{}, err
+	}
+	defer tx.Rollback(ctx)
+
+	//TODO: add pagination if enough time
+	query := repo.DB.Builder.Select("id, user_id, points, status, created_at, updated_at").
+		From("orders").
+		Where(squirrel.Eq{"user_id": userId}).
+		OrderBy("created_at DESC")
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return []order.Order{}, err
+	}
+
+	rows, err := tx.Query(ctx, sql, args...)
+	if err != nil {
+		return []order.Order{}, err
+	}
+	defer rows.Close()
+	var orders []order.Order
+
+	for rows.Next() {
+		var o order.Order
+		if err = rows.Scan(&o.Id, &o.UserId, &o.Points, &o.Status, &o.CreatedAt, &o.UpdatedAt); err != nil {
+			return []order.Order{}, err
+		}
+
+		orders = append(orders, o)
+	}
+
+	if err = rows.Err(); err != nil {
+		return []order.Order{}, err
+	}
+
+	return orders, nil
+}

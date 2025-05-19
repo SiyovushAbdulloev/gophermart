@@ -59,3 +59,18 @@ func (h *OrderHandler) Store(ctx *gin.Context) {
 		"message": "Order successfully stored",
 	})
 }
+
+func (h *OrderHandler) List(ctx *gin.Context) {
+	u, _ := ctx.Get("user")
+	userData := u.(*user.User)
+
+	orders, err := h.uc.List(userData.Id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"orders": orders,
+	})
+}

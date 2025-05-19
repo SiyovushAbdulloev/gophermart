@@ -23,3 +23,7 @@ func (ou *OrderUsecase) Store(id int, u user.User) (*order.Order, error) {
 func (ou *OrderUsecase) GetOrderById(id int) (*order.Order, error) {
 	return ou.repo.GetOrderById(id)
 }
+
+func (ou *OrderUsecase) List(userId int) ([]order.Order, error) {
+	return ou.repo.List(userId)
+}

@@ -14,4 +14,5 @@ type AuthRepository interface {
 type OrderRepository interface {
 	Store(id int, u user.User) (*order.Order, error)
 	GetOrderById(id int) (*order.Order, error)
+	List(userId int) ([]order.Order, error)
 }
