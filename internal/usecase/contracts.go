@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/order"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
+	"github.com/SiyovushAbdulloev/gophermart/internal/entity/withdraw"
 )
 
 type AuthUsecase interface {
@@ -15,4 +16,8 @@ type OrderUsecase interface {
 	Store(id int, u user.User) (*order.Order, error)
 	GetOrderById(id int) (*order.Order, error)
 	List(userId int) ([]order.Order, error)
+}
+
+type WithdrawUsecase interface {
+	List(userId int) ([]withdraw.WithDraw, error)
 }

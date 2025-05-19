@@ -102,7 +102,7 @@ func (repo *OrderRepository) List(userId int) ([]order.Order, error) {
 		return []order.Order{}, err
 	}
 	defer rows.Close()
-	var orders []order.Order
+	var orders []order.Order = []order.Order{}
 
 	for rows.Next() {
 		var o order.Order

@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/SiyovushAbdulloev/gophermart/internal/handler/http/auth"
 	"github.com/SiyovushAbdulloev/gophermart/internal/handler/http/order"
+	WithdrawHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/withdraw"
 	"github.com/SiyovushAbdulloev/gophermart/internal/handler/middleware"
 	"github.com/SiyovushAbdulloev/gophermart/internal/repository"
 	"github.com/gin-gonic/gin"
@@ -22,4 +23,11 @@ func DefineOrderRoutes(app *gin.Engine, handler *order.OrderHandler, secret stri
 
 	group.POST("/", handler.Store)
 	group.GET("/", handler.List)
+}
+
+func DefineWithdrawRoutes(app *gin.Engine, handler *WithdrawHandler.WithdrawHandler, secret string, repository repository.AuthRepository) {
+	group := app.Group("/api")
+	group.Use(middleware.Authenticate(secret, repository))
+
+	group.GET("/user/withdrawals", handler.List)
 }

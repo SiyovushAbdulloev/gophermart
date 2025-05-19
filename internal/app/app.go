@@ -5,10 +5,13 @@ import (
 	"github.com/SiyovushAbdulloev/gophermart/internal/handler/http"
 	AuthHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/auth"
 	OrderHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/order"
+	WithdrawHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/withdraw"
 	AuthRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/auth"
 	OrderRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/order"
+	WithdrawRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/withdraw"
 	AuthUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/auth"
 	OrderUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/order"
+	WithdrawUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/withdraw"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/config"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/httpserver"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/postgres"
@@ -50,9 +53,14 @@ func Main(cfg *config.Config) {
 	orderUC := OrderUsecase.New(orderRepo)
 	orderHl := OrderHandler.New(orderUC)
 
+	withdrawRepo := WithdrawRepo.New(postgresDB)
+	withdrawUC := WithdrawUsecase.New(withdrawRepo)
+	withdrawHl := WithdrawHandler.New(withdrawUC)
+
 	httpServer := httpserver.New(httpserver.WithAddress(cfg.ServerAddr))
 	http.DefineAuthRoutes(httpServer.App, authHl)
 	http.DefineOrderRoutes(httpServer.App, orderHl, cfg.JWTSecretKey, authRepo)
+	http.DefineWithdrawRoutes(httpServer.App, withdrawHl, cfg.JWTSecretKey, authRepo)
 
 	go func() {
 		err := httpServer.Run()

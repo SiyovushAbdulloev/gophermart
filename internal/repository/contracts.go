@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/order"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
+	"github.com/SiyovushAbdulloev/gophermart/internal/entity/withdraw"
 )
 
 type AuthRepository interface {
@@ -15,4 +16,8 @@ type OrderRepository interface {
 	Store(id int, u user.User) (*order.Order, error)
 	GetOrderById(id int) (*order.Order, error)
 	List(userId int) ([]order.Order, error)
+}
+
+type WithDrawRepository interface {
+	List(userId int) ([]withdraw.WithDraw, error)
 }
