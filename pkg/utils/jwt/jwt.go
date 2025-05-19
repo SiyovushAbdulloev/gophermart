@@ -7,13 +7,13 @@ import (
 )
 
 type Claims struct {
-	*jwt.StandardClaims
-	UserId int
+	jwt.StandardClaims
+	UserId int `json:"user_id"`
 }
 
 func JWTString(id int, secret string, expiry time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-		StandardClaims: &jwt.StandardClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(expiry).Unix(),
 		},
 		UserId: id,
@@ -32,9 +32,8 @@ func CheckJWT(tokenString string, secret string) int {
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-
 		return []byte(secret), nil
 	})
 	if err != nil {
