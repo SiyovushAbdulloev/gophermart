@@ -20,4 +20,9 @@ type OrderRepository interface {
 
 type WithDrawRepository interface {
 	List(userId int) ([]withdraw.WithDraw, error)
+	Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error)
+}
+
+type BalanceRepository interface {
+	GetAmount(id int) (int, error)
 }

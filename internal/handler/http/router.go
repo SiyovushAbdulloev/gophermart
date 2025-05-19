@@ -30,4 +30,5 @@ func DefineWithdrawRoutes(app *gin.Engine, handler *WithdrawHandler.WithdrawHand
 	group.Use(middleware.Authenticate(secret, repository))
 
 	group.GET("/user/withdrawals", handler.List)
+	group.POST("/user/balance/withdraw", handler.Store)
 }

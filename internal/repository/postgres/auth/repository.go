@@ -50,6 +50,20 @@ func (repo *AuthRepository) Register(user user.User) (*user.User, error) {
 		return nil, err
 	}
 
+	query = repo.DB.Builder.Insert("balances").
+		Columns("user_id", "amount").
+		Values(user.Id, 0)
+
+	sql, args, err = query.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = tx.Exec(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+
 	if err = tx.Commit(ctx); err != nil {
 		return nil, err
 	}

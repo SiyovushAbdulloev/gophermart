@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/usecase"
 	"github.com/gin-gonic/gin"
@@ -38,8 +37,6 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusConflict, gin.H{"error": "User with this email already exists"})
 		return
 	}
-
-	fmt.Println("Before registering")
 
 	token, err := h.uc.Register(u)
 	if err != nil {

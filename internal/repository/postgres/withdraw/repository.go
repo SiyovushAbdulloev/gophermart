@@ -3,8 +3,10 @@ package auth
 import (
 	"context"
 	"github.com/Masterminds/squirrel"
+	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/withdraw"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/postgres"
+	"time"
 )
 
 type WithDrawRepository struct {
@@ -43,7 +45,7 @@ func (repo *WithDrawRepository) List(userId int) ([]withdraw.WithDraw, error) {
 
 	for rows.Next() {
 		var w withdraw.WithDraw
-		if err = rows.Scan(&w.Id, &w.UserId, &w.OrderId, &w.Points, &w.CreatedAt, &w.UpdatedAt); err != nil {
+		if err = rows.Scan(&w.Id, &w.UserId, &w.OrderId, &w.Sum, &w.CreatedAt, &w.UpdatedAt); err != nil {
 			return []withdraw.WithDraw{}, err
 		}
 
@@ -55,4 +57,49 @@ func (repo *WithDrawRepository) List(userId int) ([]withdraw.WithDraw, error) {
 	}
 
 	return withdraws, nil
+}
+
+func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*withdraw.WithDraw, error) {
+	ctx := context.Background()
+	tx, err := repo.DB.Pool.Begin(ctx)
+	if err != nil {
+		return &withdraw.WithDraw{}, err
+	}
+	defer tx.Rollback(ctx)
+
+	query := repo.DB.Builder.Update("balances").
+		Set("amount", squirrel.Expr("amount - ?", w.Sum)).
+		Where(squirrel.Eq{"user_id": user.Id})
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return &withdraw.WithDraw{}, err
+	}
+
+	_, err = tx.Exec(ctx, sql, args...)
+	if err != nil {
+		return &withdraw.WithDraw{}, err
+	}
+
+	now := time.Now()
+	queryW := repo.DB.Builder.Insert("withdraws").
+		Columns("user_id", "order_id", "points", "created_at", "updated_at").
+		Values(user.Id, w.OrderId, w.Sum, now, now).
+		Suffix("RETURNING id, user_id, order_id, points, created_at, updated_at")
+
+	sql, args, err = queryW.ToSql()
+	if err != nil {
+		return &withdraw.WithDraw{}, err
+	}
+
+	err = tx.QueryRow(ctx, sql, args...).Scan(&w.Id, &w.UserId, &w.OrderId, &w.Sum, &w.CreatedAt, &w.UpdatedAt)
+	if err != nil {
+		return &withdraw.WithDraw{}, err
+	}
+
+	if err = tx.Commit(ctx); err != nil {
+		return &withdraw.WithDraw{}, err
+	}
+
+	return &w, nil
 }

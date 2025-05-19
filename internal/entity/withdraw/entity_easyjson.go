@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson4f4a6fc6DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(in *jlexer.Lexer, out *WithDraw) {
+func easyjson163c17a9DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(in *jlexer.Lexer, out *WithDraw) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -42,8 +42,8 @@ func easyjson4f4a6fc6DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 			out.UserId = int(in.Int())
 		case "order_id":
 			out.OrderId = int(in.Int())
-		case "points":
-			out.Points = int64(in.Int64())
+		case "sum":
+			out.Sum = int64(in.Int64())
 		case "created_at":
 			if data := in.Raw(); in.Ok() {
 				in.AddError((out.CreatedAt).UnmarshalJSON(data))
@@ -62,7 +62,7 @@ func easyjson4f4a6fc6DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 		in.Consumed()
 	}
 }
-func easyjson4f4a6fc6EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(out *jwriter.Writer, in WithDraw) {
+func easyjson163c17a9EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(out *jwriter.Writer, in WithDraw) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -82,9 +82,9 @@ func easyjson4f4a6fc6EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 		out.Int(int(in.OrderId))
 	}
 	{
-		const prefix string = ",\"points\":"
+		const prefix string = ",\"sum\":"
 		out.RawString(prefix)
-		out.Int64(int64(in.Points))
+		out.Int64(int64(in.Sum))
 	}
 	{
 		const prefix string = ",\"created_at\":"
@@ -102,23 +102,23 @@ func easyjson4f4a6fc6EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 // MarshalJSON supports json.Marshaler interface
 func (v WithDraw) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson4f4a6fc6EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(&w, v)
+	easyjson163c17a9EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v WithDraw) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson4f4a6fc6EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(w, v)
+	easyjson163c17a9EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *WithDraw) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson4f4a6fc6DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(&r, v)
+	easyjson163c17a9DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *WithDraw) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson4f4a6fc6DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(l, v)
+	easyjson163c17a9DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWithdraw(l, v)
 }

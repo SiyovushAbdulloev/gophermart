@@ -7,9 +7,11 @@ import (
 	OrderHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/order"
 	WithdrawHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/withdraw"
 	AuthRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/auth"
+	BalanceRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/balance"
 	OrderRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/order"
 	WithdrawRepo "github.com/SiyovushAbdulloev/gophermart/internal/repository/postgres/withdraw"
 	AuthUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/auth"
+	BalanceUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/balance"
 	OrderUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/order"
 	WithdrawUsecase "github.com/SiyovushAbdulloev/gophermart/internal/usecase/withdraw"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/config"
@@ -27,9 +29,6 @@ func Main(cfg *config.Config) {
 		panic(err)
 	}
 
-	log.Println(postgresDB.Pool)
-	log.Println(postgresDB.Builder)
-	log.Println("Migrations started")
 	dbMigration, err := sql.Open("postgres", cfg.DatabaseURI)
 	if err != nil {
 		log.Fatalf("❌ goose.Open error: %v", err)
@@ -43,7 +42,6 @@ func Main(cfg *config.Config) {
 	if err = goose.Up(dbMigration, "./migrations"); err != nil {
 		log.Fatalf("❌ goose.Up error: %v", err)
 	}
-	log.Println("Migrations finished")
 
 	authRepo := AuthRepo.New(postgresDB)
 	authUC := AuthUsecase.New(authRepo, cfg.JWTSecretKey, time.Duration(cfg.JWTExpire)*time.Hour)
@@ -53,9 +51,12 @@ func Main(cfg *config.Config) {
 	orderUC := OrderUsecase.New(orderRepo)
 	orderHl := OrderHandler.New(orderUC)
 
+	balanceRepo := BalanceRepo.New(postgresDB)
+	balanceUC := BalanceUsecase.New(balanceRepo)
+
 	withdrawRepo := WithdrawRepo.New(postgresDB)
 	withdrawUC := WithdrawUsecase.New(withdrawRepo)
-	withdrawHl := WithdrawHandler.New(withdrawUC)
+	withdrawHl := WithdrawHandler.New(withdrawUC, balanceUC)
 
 	httpServer := httpserver.New(httpserver.WithAddress(cfg.ServerAddr))
 	http.DefineAuthRoutes(httpServer.App, authHl)

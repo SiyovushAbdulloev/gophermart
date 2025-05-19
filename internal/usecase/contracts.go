@@ -20,4 +20,9 @@ type OrderUsecase interface {
 
 type WithdrawUsecase interface {
 	List(userId int) ([]withdraw.WithDraw, error)
+	Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error)
+}
+
+type BalanceUsecase interface {
+	GetAmount(id int) (int, error)
 }

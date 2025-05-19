@@ -1,5 +1,4 @@
 # .air.toml
-
 [build]
 cmd = "go build -buildvcs=false -o ./tmp/app ./cmd/gophermart"
 bin = "./tmp/app"
@@ -8,4 +7,8 @@ include_ext = ["go"]
 exclude_dir = ["tmp", "vendor", "node_modules"]
 exclude_file = ["*_test.go"]
 delay = 1000
-log = "air.log"
+
+[log]
+time = true
+color = true
+main_only = false
