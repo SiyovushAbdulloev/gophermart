@@ -103,3 +103,30 @@ func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*wit
 
 	return &w, nil
 }
+
+func (repo *WithDrawRepository) Sum(id int) (int, error) {
+	ctx := context.Background()
+	tx, err := repo.DB.Pool.Begin(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	defer tx.Rollback(ctx)
+
+	query := repo.DB.Builder.Select("SUM(points) as sum").
+		From("withdraws").
+		Where(squirrel.Eq{"user_id": id})
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	var sum int
+	err = tx.QueryRow(ctx, sql, args...).Scan(&sum)
+	if err != nil {
+		return 0, err
+	}
+
+	return sum, nil
+}

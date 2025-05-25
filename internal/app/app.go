@@ -24,7 +24,7 @@ import (
 )
 
 func Main(cfg *config.Config) {
-	postgresDB, err := postgres.New(cfg.DatabaseURI, postgres.ConnAttempts(cfg.DatabaseMaxConn), postgres.ConnDelay(cfg.DatabaseMaxDelay), postgres.MaxPoolSize(cfg.DatabaseMaxConn))
+	postgresDB, err := postgres.New(cfg.DatabaseURI, postgres.ConnAttempts(cfg.DatabaseMaxAttempts), postgres.ConnDelay(cfg.DatabaseMaxDelay), postgres.MaxPoolSize(cfg.DatabaseMaxConn))
 	if err != nil {
 		panic(err)
 	}

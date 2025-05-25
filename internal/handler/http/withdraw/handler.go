@@ -37,6 +37,28 @@ func (h *WithdrawHandler) List(ctx *gin.Context) {
 	})
 }
 
+func (h *WithdrawHandler) Balance(ctx *gin.Context) {
+	u, _ := ctx.Get("user")
+	userData := u.(*user.User)
+
+	balance, err := h.balanceUC.GetAmount(userData.Id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	withdrawn, err := h.uc.Sum(userData.Id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"current":   balance,
+		"withdrawn": withdrawn,
+	})
+}
+
 func (h *WithdrawHandler) Store(ctx *gin.Context) {
 	body, err := io.ReadAll(ctx.Request.Body)
 	if err != nil {

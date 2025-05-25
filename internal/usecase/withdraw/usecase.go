@@ -23,3 +23,7 @@ func (ou *WithDrawUsecase) List(userId int) ([]withdraw.WithDraw, error) {
 func (ou *WithDrawUsecase) Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error) {
 	return ou.repo.Store(w, u)
 }
+
+func (ou *WithDrawUsecase) Sum(id int) (int, error) {
+	return ou.repo.Sum(id)
+}
