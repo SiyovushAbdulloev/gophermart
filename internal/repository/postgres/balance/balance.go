@@ -44,3 +44,19 @@ func (repo *BalanceRepository) GetAmount(id int) (int, error) {
 
 	return amount, nil
 }
+
+func (repo *BalanceRepository) AddPoints(userID int, points int) error {
+	ctx := context.Background()
+	query := repo.DB.Builder.
+		Update("balances").
+		Set("amount", squirrel.Expr("amount + ?", points)).
+		Where(squirrel.Eq{"user_id": userID})
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = repo.DB.Pool.Exec(ctx, sql, args...)
+	return err
+}

@@ -16,6 +16,7 @@ type OrderRepository interface {
 	Store(id int, u user.User) (*order.Order, error)
 	GetOrderById(id int) (*order.Order, error)
 	List(userId int) ([]order.Order, error)
+	UpdateStatus(orderId int, status string) error
 }
 
 type WithDrawRepository interface {
@@ -26,4 +27,5 @@ type WithDrawRepository interface {
 
 type BalanceRepository interface {
 	GetAmount(id int) (int, error)
+	AddPoints(userId int, amount int) error
 }

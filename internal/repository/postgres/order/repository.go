@@ -1,4 +1,4 @@
-package auth
+package order
 
 import (
 	"context"
@@ -28,7 +28,7 @@ func (repo *OrderRepository) Store(id int, u user.User) (*order.Order, error) {
 
 	query := repo.DB.Builder.Insert("orders").
 		Columns("id", "user_id", "points", "status").
-		Values(id, u.Id, 100, order.NewStatus).
+		Values(id, u.Id, 0, order.NewStatus).
 		Suffix("RETURNING id, created_at, updated_at")
 
 	sql, args, err := query.ToSql()
@@ -118,4 +118,33 @@ func (repo *OrderRepository) List(userId int) ([]order.Order, error) {
 	}
 
 	return orders, nil
+}
+
+func (repo *OrderRepository) UpdateStatus(orderID int, status string) error {
+	ctx := context.Background()
+	tx, err := repo.DB.Pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	query := repo.DB.Builder.Update("orders").
+		Set("status", status).
+		Where(squirrel.Eq{"id": orderID})
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = repo.DB.Pool.Exec(ctx, sql, args...)
+	if err != nil {
+		return err
+	}
+
+	if err = tx.Commit(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }

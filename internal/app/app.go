@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"github.com/SiyovushAbdulloev/gophermart/internal/client/accrual"
 	"github.com/SiyovushAbdulloev/gophermart/internal/handler/http"
 	AuthHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/auth"
 	OrderHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/order"
@@ -47,12 +48,13 @@ func Main(cfg *config.Config) {
 	authUC := AuthUsecase.New(authRepo, cfg.JWTSecretKey, time.Duration(cfg.JWTExpire)*time.Hour)
 	authHl := AuthHandler.New(authUC)
 
-	orderRepo := OrderRepo.New(postgresDB)
-	orderUC := OrderUsecase.New(orderRepo)
-	orderHl := OrderHandler.New(orderUC)
-
+	accrualClient := accrual.New(cfg.AccrualAddr)
 	balanceRepo := BalanceRepo.New(postgresDB)
 	balanceUC := BalanceUsecase.New(balanceRepo)
+	orderRepo := OrderRepo.New(postgresDB)
+	worker := OrderUsecase.NewWorker(accrualClient, orderRepo, balanceRepo)
+	orderUC := OrderUsecase.New(orderRepo, worker)
+	orderHl := OrderHandler.New(orderUC)
 
 	withdrawRepo := WithdrawRepo.New(postgresDB)
 	withdrawUC := WithdrawUsecase.New(withdrawRepo)

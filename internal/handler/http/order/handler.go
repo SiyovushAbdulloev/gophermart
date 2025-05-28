@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/usecase"
-	"github.com/SiyovushAbdulloev/gophermart/pkg/utils/numeric"
+	"github.com/SiyovushAbdulloev/gophermart/pkg/utils/utils"
 	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
@@ -28,7 +28,7 @@ func (h *OrderHandler) Store(ctx *gin.Context) {
 
 	orderId := string(body)
 
-	if !numeric.IsNumberic(orderId) {
+	if !utils.IsValidLuhn(orderId) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "wrong order"})
 		return
 	}
