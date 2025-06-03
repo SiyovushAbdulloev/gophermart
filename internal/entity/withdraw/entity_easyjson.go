@@ -40,8 +40,8 @@ func easyjson163c17a9DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 			out.Id = int(in.Int())
 		case "user_id":
 			out.UserId = int(in.Int())
-		case "order_id":
-			out.OrderId = int(in.Int())
+		case "order":
+			out.Order = int64(in.Int64())
 		case "sum":
 			out.Sum = int64(in.Int64())
 		case "created_at":
@@ -77,9 +77,9 @@ func easyjson163c17a9EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 		out.Int(int(in.UserId))
 	}
 	{
-		const prefix string = ",\"order_id\":"
+		const prefix string = ",\"order\":"
 		out.RawString(prefix)
-		out.Int(int(in.OrderId))
+		out.Int64(int64(in.Order))
 	}
 	{
 		const prefix string = ",\"sum\":"

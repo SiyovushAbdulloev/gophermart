@@ -1,4 +1,4 @@
-package order
+package withdraw
 
 import (
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
@@ -70,6 +70,7 @@ func (h *WithdrawHandler) Store(ctx *gin.Context) {
 	err = easyjson.Unmarshal(body, &w)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	u, _ := ctx.Get("user")
