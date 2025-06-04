@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/SiyovushAbdulloev/gophermart/internal/client/accrual"
 	"github.com/SiyovushAbdulloev/gophermart/internal/handler/http"
 	AuthHandler "github.com/SiyovushAbdulloev/gophermart/internal/handler/http/auth"
@@ -25,6 +26,7 @@ import (
 )
 
 func Main(cfg *config.Config) {
+	fmt.Println("STARTING BUILDING APP")
 	postgresDB, err := postgres.New(cfg.DatabaseURI, postgres.ConnAttempts(cfg.DatabaseMaxAttempts), postgres.ConnDelay(cfg.DatabaseMaxDelay), postgres.MaxPoolSize(cfg.DatabaseMaxConn))
 	if err != nil {
 		panic(err)

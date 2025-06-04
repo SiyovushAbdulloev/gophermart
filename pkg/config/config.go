@@ -23,11 +23,11 @@ type App struct {
 }
 
 type Config struct {
-	ServerAddr          string `env:"SERVER_ADDR,required"`
-	AccrualAddr         string `env:"ACCRUAL_ADDR,required"`
+	ServerAddr          string `env:"RUN_ADDRESS"`
+	AccrualAddr         string `env:"ACCRUAL_SYSTEM_ADDRESS"`
 	DatabaseUsername    string `env:"DB_USERNAME,required"`
 	DatabasePassword    string `env:"DB_PASSWORD,required"`
-	DatabaseURI         string `env:"DB_URI,required"`
+	DatabaseURI         string `env:"DATABASE_URI"`
 	DatabaseMaxConn     int    `env:"DB_MAX_CONN,required"`
 	DatabaseMaxAttempts int    `env:"DB_MAX_ATTEMPTS,required"`
 	DatabaseMaxDelay    int    `env:"DB_MAX_DELAY,required"`
@@ -38,16 +38,16 @@ type Config struct {
 func New() (*Config, error) {
 	cfg := &Config{}
 
-	// Значения по умолчанию, если флаг не передан
-	flag.StringVar(&cfg.ServerAddr, "a", "", "address and port to run the service (RUN_ADDRESS)")
-	flag.StringVar(&cfg.DatabaseURI, "d", "", "database connection string (DATABASE_URI)")
-	flag.StringVar(&cfg.AccrualAddr, "r", "", "accrual system address (ACCRUAL_SYSTEM_ADDRESS)")
-	flag.Parse()
-
 	// Подгрузка переменных окружения (если флаги не заданы)
 	if err := env.Parse(cfg); err != nil {
 		return nil, err
 	}
+
+	// Значения по умолчанию, если флаг не передан
+	flag.StringVar(&cfg.ServerAddr, "a", cfg.ServerAddr, "address and port to run the service (RUN_ADDRESS)")
+	flag.StringVar(&cfg.DatabaseURI, "d", cfg.DatabaseURI, "database connection string (DATABASE_URI)")
+	flag.StringVar(&cfg.AccrualAddr, "r", cfg.AccrualAddr, "accrual system address (ACCRUAL_SYSTEM_ADDRESS)")
+	flag.Parse()
 
 	return cfg, nil
 }
