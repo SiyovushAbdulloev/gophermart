@@ -45,7 +45,7 @@ func New(url string, opts ...Option) (*Postgres, error) {
 	}
 
 	if err != nil {
-		fmt.Errorf("postgres - NewPostgres - connAttempts == 0: %w", err)
+		_ = fmt.Errorf("postgres - NewPostgres - connAttempts == 0: %w", err)
 	}
 
 	return pg, nil

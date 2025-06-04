@@ -50,7 +50,7 @@ func TestWithdrawHandler_List(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	router.Use(func(c *gin.Context) {
-		c.Set("user", &user.User{Id: 1})
+		c.Set("user", &user.User{ID: 1})
 		c.Next()
 	})
 	router.GET("/withdrawals", handler.List)
@@ -73,7 +73,7 @@ func TestWithdrawHandler_Balance(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	router.Use(func(c *gin.Context) {
-		c.Set("user", &user.User{Id: 1})
+		c.Set("user", &user.User{ID: 1})
 		c.Next()
 	})
 	router.GET("/balance", handler.Balance)
@@ -91,7 +91,7 @@ func TestWithdrawHandler_Balance(t *testing.T) {
 }
 
 func TestWithdrawHandler_Store(t *testing.T) {
-	u := user.User{Id: 1}
+	u := user.User{ID: 1}
 	expectedWithdraw := withdraw.WithDraw{
 		Order: 79927398713,
 		Sum:   150,
@@ -101,7 +101,7 @@ func TestWithdrawHandler_Store(t *testing.T) {
 	balanceUC := new(mockBalanceUsecase)
 
 	// mock баланс
-	balanceUC.On("GetAmount", u.Id).Return(200, nil)
+	balanceUC.On("GetAmount", u.ID).Return(200, nil)
 
 	// mock Store с аргументами, на которые мы реагируем с помощью функции
 	uc.On("Store", mock.MatchedBy(func(w withdraw.WithDraw) bool {

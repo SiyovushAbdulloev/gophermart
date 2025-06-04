@@ -3,6 +3,6 @@ package entity
 import "errors"
 
 var (
-	NotFoundErr         = errors.New("not found")
-	PasswordNotMatchErr = errors.New("password not match")
+	NotFoundErrEntity         = errors.New("not found")
+	PasswordNotMatchErrEntity = errors.New("password not match")
 )

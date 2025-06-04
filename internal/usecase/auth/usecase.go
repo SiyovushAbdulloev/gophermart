@@ -30,7 +30,7 @@ func (au *AuthUsecase) Register(user user.User) (string, error) {
 		return "", err
 	}
 
-	token, err := jwt.JWTString(u.Id, au.jwtSecret, au.jwtExpire)
+	token, err := jwt.JWTString(u.ID, au.jwtSecret, au.jwtExpire)
 	if err != nil {
 		fmt.Printf("Error creating token: %s\n", err.Error())
 		return "", err
@@ -46,14 +46,14 @@ func (au *AuthUsecase) GetUserByEmail(email string) (*user.User, error) {
 func (au *AuthUsecase) Login(user *user.User) (string, error) {
 	u, err := au.repo.GetUserByEmail(user.Email)
 	if err != nil {
-		return "", entity.NotFoundErr
+		return "", entity.NotFoundErrEntity
 	}
 
 	if !hash.CheckPassword(user.Password, u.Password) {
-		return "", entity.PasswordNotMatchErr
+		return "", entity.PasswordNotMatchErrEntity
 	}
 
-	token, err := jwt.JWTString(u.Id, au.jwtSecret, au.jwtExpire)
+	token, err := jwt.JWTString(u.ID, au.jwtSecret, au.jwtExpire)
 	if err != nil {
 		return "", err
 	}

@@ -37,7 +37,7 @@ func easyjson9e1087fdDecodeGithubComSiyovushAbdulloevGophermartInternalEntityUse
 		}
 		switch key {
 		case "id":
-			out.Id = int(in.Int())
+			out.ID = int(in.Int())
 		case "email":
 			out.Email = string(in.String())
 		case "password":
@@ -67,7 +67,7 @@ func easyjson9e1087fdEncodeGithubComSiyovushAbdulloevGophermartInternalEntityUse
 	{
 		const prefix string = ",\"id\":"
 		out.RawString(prefix[1:])
-		out.Int(int(in.Id))
+		out.Int(int(in.ID))
 	}
 	{
 		const prefix string = ",\"email\":"

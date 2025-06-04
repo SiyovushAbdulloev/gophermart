@@ -11,8 +11,8 @@ var (
 
 //easyjson:json
 type Order struct {
-	Id        int       `json:"id"`
-	UserId    int       `json:"user_id"`
+	ID        int       `json:"id"`
+	UserID    int       `json:"user_id"`
 	Points    int64     `json:"points"`
 	Status    int       `json:"status"`
 	CreatedAt time.Time `json:"created_at"`

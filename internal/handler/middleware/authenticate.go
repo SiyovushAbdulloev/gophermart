@@ -18,14 +18,14 @@ func Authenticate(secret string, repository repository.AuthRepository) gin.Handl
 
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 		tokenString = strings.TrimSpace(tokenString)
-		userId := jwt2.CheckJWT(tokenString, secret)
+		userID := jwt2.CheckJWT(tokenString, secret)
 
-		if userId == -1 {
+		if userID == -1 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "wrong jwt token"})
 			return
 		}
 
-		user, err := repository.GetUserById(userId)
+		user, err := repository.GetUserByID(userID)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user not found"})
 			return

@@ -45,14 +45,14 @@ func (repo *AuthRepository) Register(user user.User) (*user.User, error) {
 		return nil, err
 	}
 
-	err = tx.QueryRow(context.Background(), sql, args...).Scan(&user.Id, &user.CreatedAt, &user.UpdatedAt)
+	err = tx.QueryRow(context.Background(), sql, args...).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
 
 	query = repo.DB.Builder.Insert("balances").
 		Columns("user_id", "amount").
-		Values(user.Id, 0)
+		Values(user.ID, 0)
 
 	sql, args, err = query.ToSql()
 	if err != nil {
@@ -91,7 +91,7 @@ func (repo *AuthRepository) GetUserByEmail(email string) (*user.User, error) {
 
 	var u user.User
 
-	err = tx.QueryRow(context.Background(), sql, args...).Scan(&u.Id, &u.Email, &u.Password)
+	err = tx.QueryRow(context.Background(), sql, args...).Scan(&u.ID, &u.Email, &u.Password)
 	if err != nil {
 		fmt.Println(err.Error())
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -103,7 +103,7 @@ func (repo *AuthRepository) GetUserByEmail(email string) (*user.User, error) {
 	return &u, nil
 }
 
-func (repo *AuthRepository) GetUserById(id int) (*user.User, error) {
+func (repo *AuthRepository) GetUserByID(id int) (*user.User, error) {
 	ctx := context.Background()
 
 	tx, err := repo.DB.Pool.Begin(ctx)
@@ -123,7 +123,7 @@ func (repo *AuthRepository) GetUserById(id int) (*user.User, error) {
 	}
 
 	var u user.User
-	err = tx.QueryRow(ctx, sql, args...).Scan(&u.Id, &u.Email, &u.Password)
+	err = tx.QueryRow(ctx, sql, args...).Scan(&u.ID, &u.Email, &u.Password)
 	if err != nil {
 		return nil, err
 	}

@@ -16,8 +16,8 @@ func New(repo repository.WithDrawRepository) *WithDrawUsecase {
 	}
 }
 
-func (ou *WithDrawUsecase) List(userId int) ([]withdraw.WithDraw, error) {
-	return ou.repo.List(userId)
+func (ou *WithDrawUsecase) List(userID int) ([]withdraw.WithDraw, error) {
+	return ou.repo.List(userID)
 }
 
 func (ou *WithDrawUsecase) Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error) {

@@ -8,7 +8,7 @@ import (
 
 type Claims struct {
 	jwt.StandardClaims
-	UserId int `json:"user_id"`
+	UserID int `json:"user_id"`
 }
 
 func JWTString(id int, secret string, expiry time.Duration) (string, error) {
@@ -16,7 +16,7 @@ func JWTString(id int, secret string, expiry time.Duration) (string, error) {
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(expiry).Unix(),
 		},
-		UserId: id,
+		UserID: id,
 	})
 
 	tokenString, err := token.SignedString([]byte(secret))
@@ -45,5 +45,5 @@ func CheckJWT(tokenString string, secret string) int {
 		return -1
 	}
 
-	return claims.UserId
+	return claims.UserID
 }

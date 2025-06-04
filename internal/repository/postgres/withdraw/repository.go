@@ -17,7 +17,7 @@ func New(db *postgres.Postgres) *WithDrawRepository {
 	return &WithDrawRepository{DB: db}
 }
 
-func (repo *WithDrawRepository) List(userId int) ([]withdraw.WithDraw, error) {
+func (repo *WithDrawRepository) List(userID int) ([]withdraw.WithDraw, error) {
 	ctx := context.Background()
 	tx, err := repo.DB.Pool.Begin(ctx)
 	if err != nil {
@@ -28,7 +28,7 @@ func (repo *WithDrawRepository) List(userId int) ([]withdraw.WithDraw, error) {
 	//TODO: add pagination if enough time
 	query := repo.DB.Builder.Select("id, user_id, order_id, points, created_at, updated_at").
 		From("withdraws").
-		Where(squirrel.Eq{"user_id": userId}).
+		Where(squirrel.Eq{"user_id": userID}).
 		OrderBy("created_at DESC")
 
 	sql, args, err := query.ToSql()
@@ -41,11 +41,11 @@ func (repo *WithDrawRepository) List(userId int) ([]withdraw.WithDraw, error) {
 		return []withdraw.WithDraw{}, err
 	}
 	defer rows.Close()
-	var withdraws []withdraw.WithDraw = []withdraw.WithDraw{}
+	var withdraws = []withdraw.WithDraw{}
 
 	for rows.Next() {
 		var w withdraw.WithDraw
-		if err = rows.Scan(&w.Id, &w.UserId, &w.Order, &w.Sum, &w.CreatedAt, &w.UpdatedAt); err != nil {
+		if err = rows.Scan(&w.ID, &w.UserID, &w.Order, &w.Sum, &w.CreatedAt, &w.UpdatedAt); err != nil {
 			return []withdraw.WithDraw{}, err
 		}
 
@@ -69,7 +69,7 @@ func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*wit
 
 	query := repo.DB.Builder.Update("balances").
 		Set("amount", squirrel.Expr("amount - ?", w.Sum)).
-		Where(squirrel.Eq{"user_id": user.Id})
+		Where(squirrel.Eq{"user_id": user.ID})
 
 	sql, args, err := query.ToSql()
 	if err != nil {
@@ -84,7 +84,7 @@ func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*wit
 	now := time.Now()
 	queryW := repo.DB.Builder.Insert("withdraws").
 		Columns("user_id", "order_id", "points", "created_at", "updated_at").
-		Values(user.Id, w.Order, w.Sum, now, now).
+		Values(user.ID, w.Order, w.Sum, now, now).
 		Suffix("RETURNING id, user_id, order_id, points, created_at, updated_at")
 
 	sql, args, err = queryW.ToSql()
@@ -92,7 +92,7 @@ func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*wit
 		return &withdraw.WithDraw{}, err
 	}
 
-	err = tx.QueryRow(ctx, sql, args...).Scan(&w.Id, &w.UserId, &w.Order, &w.Sum, &w.CreatedAt, &w.UpdatedAt)
+	err = tx.QueryRow(ctx, sql, args...).Scan(&w.ID, &w.UserID, &w.Order, &w.Sum, &w.CreatedAt, &w.UpdatedAt)
 	if err != nil {
 		return &withdraw.WithDraw{}, err
 	}

@@ -37,9 +37,9 @@ func easyjson120d1ca2DecodeGithubComSiyovushAbdulloevGophermartInternalEntityOrd
 		}
 		switch key {
 		case "id":
-			out.Id = int(in.Int())
+			out.ID = int(in.Int())
 		case "user_id":
-			out.UserId = int(in.Int())
+			out.UserID = int(in.Int())
 		case "points":
 			out.Points = int64(in.Int64())
 		case "status":
@@ -69,12 +69,12 @@ func easyjson120d1ca2EncodeGithubComSiyovushAbdulloevGophermartInternalEntityOrd
 	{
 		const prefix string = ",\"id\":"
 		out.RawString(prefix[1:])
-		out.Int(int(in.Id))
+		out.Int(int(in.ID))
 	}
 	{
 		const prefix string = ",\"user_id\":"
 		out.RawString(prefix)
-		out.Int(int(in.UserId))
+		out.Int(int(in.UserID))
 	}
 	{
 		const prefix string = ",\"points\":"

@@ -4,7 +4,7 @@ import "time"
 
 //easyjson:json
 type User struct {
-	Id        int       `json:"id"`
+	ID        int       `json:"id"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`

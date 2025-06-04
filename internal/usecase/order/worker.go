@@ -27,7 +27,7 @@ func NewWorker(client *accrual.Client, orderRepo repository.OrderRepository, bal
 
 func (w *Worker) Process(ctx context.Context, o *order.Order) {
 	err := w.accrualClient.SendOrder(accrual.OrderRequest{
-		Order: strconv.Itoa(o.Id),
+		Order: strconv.Itoa(o.ID),
 		Goods: []accrual.Good{
 			{
 				Description: "default item", // можно расширить
@@ -47,7 +47,7 @@ func (w *Worker) Process(ctx context.Context, o *order.Order) {
 		default:
 			time.Sleep(5 * time.Second)
 
-			res, err := w.accrualClient.GetOrder(strconv.Itoa(o.Id))
+			res, err := w.accrualClient.GetOrder(strconv.Itoa(o.ID))
 			if err != nil {
 				log.Printf("❌ error polling accrual system: %v", err)
 				continue
@@ -61,12 +61,12 @@ func (w *Worker) Process(ctx context.Context, o *order.Order) {
 
 			switch res.Status {
 			case "INVALID":
-				_ = w.repo.UpdateStatus(o.Id, "INVALID")
+				_ = w.repo.UpdateStatus(o.ID, "INVALID")
 				return
 			case "PROCESSED":
-				_ = w.repo.UpdateStatus(o.Id, "PROCESSED")
+				_ = w.repo.UpdateStatus(o.ID, "PROCESSED")
 				if res.Accrual > 0 {
-					_ = w.balanceRepo.AddPoints(o.UserId, int(res.Accrual))
+					_ = w.balanceRepo.AddPoints(o.UserID, int(res.Accrual))
 				}
 				return
 			case "PROCESSING":

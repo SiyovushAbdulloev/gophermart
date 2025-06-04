@@ -26,20 +26,20 @@ func (h *OrderHandler) Store(ctx *gin.Context) {
 		return
 	}
 
-	orderId := string(body)
+	orderID := string(body)
 
-	if !utils.IsValidLuhn(orderId) {
+	if !utils.IsValidLuhn(orderID) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "wrong order"})
 		return
 	}
 
-	oId, _ := strconv.Atoi(orderId)
+	oID, _ := strconv.Atoi(orderID)
 	u, _ := ctx.Get("user")
 	userData := u.(*user.User)
 
-	previousOrder, err := h.uc.GetOrderById(oId)
+	previousOrder, _ := h.uc.GetOrderByID(oID)
 	if previousOrder != nil {
-		if previousOrder.UserId == userData.Id {
+		if previousOrder.UserID == userData.ID {
 			ctx.JSON(http.StatusOK, gin.H{"message": "order already exists"})
 		} else {
 			ctx.JSON(http.StatusConflict, gin.H{"error": "order already exists by another user"})
@@ -47,7 +47,7 @@ func (h *OrderHandler) Store(ctx *gin.Context) {
 		return
 	}
 
-	order, err := h.uc.Store(oId, *userData)
+	order, err := h.uc.Store(oID, *userData)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,7 +64,7 @@ func (h *OrderHandler) List(ctx *gin.Context) {
 	u, _ := ctx.Get("user")
 	userData := u.(*user.User)
 
-	orders, err := h.uc.List(userData.Id)
+	orders, err := h.uc.List(userData.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

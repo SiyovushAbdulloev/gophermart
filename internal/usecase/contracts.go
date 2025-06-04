@@ -14,12 +14,12 @@ type AuthUsecase interface {
 
 type OrderUsecase interface {
 	Store(id int, u user.User) (*order.Order, error)
-	GetOrderById(id int) (*order.Order, error)
-	List(userId int) ([]order.Order, error)
+	GetOrderByID(id int) (*order.Order, error)
+	List(userID int) ([]order.Order, error)
 }
 
 type WithdrawUsecase interface {
-	List(userId int) ([]withdraw.WithDraw, error)
+	List(userID int) ([]withdraw.WithDraw, error)
 	Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error)
 	Sum(id int) (int, error)
 }

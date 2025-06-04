@@ -26,7 +26,7 @@ func (h *WithdrawHandler) List(ctx *gin.Context) {
 	u, _ := ctx.Get("user")
 	userData := u.(*user.User)
 
-	withdraws, err := h.uc.List(userData.Id)
+	withdraws, err := h.uc.List(userData.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -41,13 +41,13 @@ func (h *WithdrawHandler) Balance(ctx *gin.Context) {
 	u, _ := ctx.Get("user")
 	userData := u.(*user.User)
 
-	balance, err := h.balanceUC.GetAmount(userData.Id)
+	balance, err := h.balanceUC.GetAmount(userData.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	withdrawn, err := h.uc.Sum(userData.Id)
+	withdrawn, err := h.uc.Sum(userData.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -76,7 +76,7 @@ func (h *WithdrawHandler) Store(ctx *gin.Context) {
 	u, _ := ctx.Get("user")
 	userData := u.(*user.User)
 
-	balance, err := h.balanceUC.GetAmount(userData.Id)
+	balance, err := h.balanceUC.GetAmount(userData.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

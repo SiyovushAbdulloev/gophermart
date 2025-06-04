@@ -32,7 +32,7 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	existedUser, err := h.uc.GetUserByEmail(u.Email)
+	existedUser, _ := h.uc.GetUserByEmail(u.Email)
 	if existedUser != nil {
 		ctx.JSON(http.StatusConflict, gin.H{"error": "User with this email already exists"})
 		return
