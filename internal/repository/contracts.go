@@ -20,7 +20,7 @@ type OrderRepository interface {
 }
 
 type WithDrawRepository interface {
-	List(userId int) ([]withdraw.WithDraw, error)
+	List(userID int) ([]withdraw.WithDraw, error)
 	Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error)
 	Sum(id int) (int, error)
 }

@@ -1,6 +1,9 @@
 package config
 
-import "github.com/caarlos0/env/v11"
+import (
+	"flag"
+	"github.com/caarlos0/env/v11"
+)
 
 type Server struct {
 	Addr string
@@ -33,10 +36,18 @@ type Config struct {
 }
 
 func New() (*Config, error) {
-	var cfg Config
-	if err := env.Parse(&cfg); err != nil {
+	cfg := &Config{}
+
+	// Значения по умолчанию, если флаг не передан
+	flag.StringVar(&cfg.ServerAddr, "a", "", "address and port to run the service (RUN_ADDRESS)")
+	flag.StringVar(&cfg.DatabaseURI, "d", "", "database connection string (DATABASE_URI)")
+	flag.StringVar(&cfg.AccrualAddr, "r", "", "accrual system address (ACCRUAL_SYSTEM_ADDRESS)")
+	flag.Parse()
+
+	// Подгрузка переменных окружения (если флаги не заданы)
+	if err := env.Parse(cfg); err != nil {
 		return nil, err
 	}
 
-	return &cfg, nil
+	return cfg, nil
 }

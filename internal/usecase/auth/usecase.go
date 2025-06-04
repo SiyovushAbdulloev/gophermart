@@ -46,11 +46,11 @@ func (au *AuthUsecase) GetUserByEmail(email string) (*user.User, error) {
 func (au *AuthUsecase) Login(user *user.User) (string, error) {
 	u, err := au.repo.GetUserByEmail(user.Email)
 	if err != nil {
-		return "", entity.NotFoundErrEntity
+		return "", entity.ErrNotFoundEntity
 	}
 
 	if !hash.CheckPassword(user.Password, u.Password) {
-		return "", entity.PasswordNotMatchErrEntity
+		return "", entity.ErrPasswordNotMatchEntity
 	}
 
 	token, err := jwt.JWTString(u.ID, au.jwtSecret, au.jwtExpire)
