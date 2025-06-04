@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/postgres"
@@ -45,7 +44,7 @@ func (repo *AuthRepository) Register(user user.User) (*user.User, error) {
 		return nil, err
 	}
 
-	err = tx.QueryRow(context.Background(), sql, args...).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
+	err = tx.QueryRow(ctx, sql, args...).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -91,9 +90,8 @@ func (repo *AuthRepository) GetUserByEmail(email string) (*user.User, error) {
 
 	var u user.User
 
-	err = tx.QueryRow(context.Background(), sql, args...).Scan(&u.ID, &u.Email, &u.Password)
+	err = tx.QueryRow(ctx, sql, args...).Scan(&u.ID, &u.Email, &u.Password)
 	if err != nil {
-		fmt.Println(err.Error())
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, err
 		}

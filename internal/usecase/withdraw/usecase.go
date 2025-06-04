@@ -24,6 +24,6 @@ func (ou *WithDrawUsecase) Store(w withdraw.WithDraw, u user.User) (*withdraw.Wi
 	return ou.repo.Store(w, u)
 }
 
-func (ou *WithDrawUsecase) Sum(id int) (int, error) {
+func (ou *WithDrawUsecase) Sum(id int) (float64, error) {
 	return ou.repo.Sum(id)
 }

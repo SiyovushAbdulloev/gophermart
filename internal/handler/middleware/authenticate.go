@@ -10,8 +10,8 @@ import (
 
 func Authenticate(secret string, repository repository.AuthRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
+		tokenString, err := c.Cookie("Authorization")
+		if err != nil || tokenString == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "not authenticated"})
 			return
 		}

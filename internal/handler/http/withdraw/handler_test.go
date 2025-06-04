@@ -27,9 +27,9 @@ func (m *mockWithdrawUsecase) Store(w withdraw.WithDraw, u user.User) (*withdraw
 	return args.Get(0).(*withdraw.WithDraw), args.Error(1)
 }
 
-func (m *mockWithdrawUsecase) Sum(userID int) (int, error) {
+func (m *mockWithdrawUsecase) Sum(userID int) (float64, error) {
 	args := m.Called(userID)
-	return args.Int(0), args.Error(1)
+	return float64(args.Int(0)), args.Error(1)
 }
 
 // mockBalanceUsecase mocks BalanceUsecase
@@ -37,9 +37,9 @@ type mockBalanceUsecase struct {
 	mock.Mock
 }
 
-func (m *mockBalanceUsecase) GetAmount(userID int) (int, error) {
+func (m *mockBalanceUsecase) GetAmount(userID int) (float64, error) {
 	args := m.Called(userID)
-	return args.Int(0), args.Error(1)
+	return float64(args.Int(0)), args.Error(1)
 }
 
 func TestWithdrawHandler_List(t *testing.T) {
@@ -93,7 +93,7 @@ func TestWithdrawHandler_Balance(t *testing.T) {
 func TestWithdrawHandler_Store(t *testing.T) {
 	u := user.User{ID: 1}
 	expectedWithdraw := withdraw.WithDraw{
-		Order: 79927398713,
+		Order: "79927398713",
 		Sum:   150,
 	}
 

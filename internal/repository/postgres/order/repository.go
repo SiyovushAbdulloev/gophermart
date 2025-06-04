@@ -41,6 +41,8 @@ func (repo *OrderRepository) Store(id int, u user.User) (*order.Order, error) {
 		return nil, err
 	}
 
+	o.UserID = u.ID
+
 	if err = tx.Commit(ctx); err != nil {
 		return nil, err
 	}
@@ -120,7 +122,7 @@ func (repo *OrderRepository) List(userID int) ([]order.Order, error) {
 	return orders, nil
 }
 
-func (repo *OrderRepository) UpdateStatus(orderID int, status string) error {
+func (repo *OrderRepository) UpdateStatus(orderID int, status string, points float64) error {
 	ctx := context.Background()
 	tx, err := repo.DB.Pool.Begin(ctx)
 	if err != nil {
@@ -130,6 +132,7 @@ func (repo *OrderRepository) UpdateStatus(orderID int, status string) error {
 
 	query := repo.DB.Builder.Update("orders").
 		Set("status", status).
+		Set("points", points).
 		Where(squirrel.Eq{"id": orderID})
 
 	sql, args, err := query.ToSql()
@@ -137,7 +140,7 @@ func (repo *OrderRepository) UpdateStatus(orderID int, status string) error {
 		return err
 	}
 
-	_, err = repo.DB.Pool.Exec(ctx, sql, args...)
+	_, err = tx.Exec(ctx, sql, args...)
 	if err != nil {
 		return err
 	}

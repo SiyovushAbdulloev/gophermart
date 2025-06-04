@@ -37,6 +37,7 @@ func CheckJWT(tokenString string, secret string) int {
 		return []byte(secret), nil
 	})
 	if err != nil {
+		fmt.Println("token parse error:", err)
 		return -1
 	}
 

@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/repository"
@@ -32,7 +31,6 @@ func (au *AuthUsecase) Register(user user.User) (string, error) {
 
 	token, err := jwt.JWTString(u.ID, au.jwtSecret, au.jwtExpire)
 	if err != nil {
-		fmt.Printf("Error creating token: %s\n", err.Error())
 		return "", err
 	}
 

@@ -32,9 +32,7 @@ func (h *WithdrawHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"withdraws": withdraws,
-	})
+	ctx.JSON(http.StatusOK, withdraws)
 }
 
 func (h *WithdrawHandler) Balance(ctx *gin.Context) {
@@ -82,7 +80,7 @@ func (h *WithdrawHandler) Store(ctx *gin.Context) {
 		return
 	}
 
-	if int64(balance) < w.Sum {
+	if balance < w.Sum {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Insufficient balance"})
 		return
 	}
@@ -94,6 +92,6 @@ func (h *WithdrawHandler) Store(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "Withdraaw successfully stored",
+		"message": "Withdraw successfully stored",
 	})
 }

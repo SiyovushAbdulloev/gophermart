@@ -1,7 +1,6 @@
 package order
 
 import (
-	"fmt"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/usecase"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/utils/utils"
@@ -9,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type OrderHandler struct {
@@ -29,7 +29,7 @@ func (h *OrderHandler) Store(ctx *gin.Context) {
 	orderID := string(body)
 
 	if !utils.IsValidLuhn(orderID) {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "wrong order"})
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"error": "wrong order"})
 		return
 	}
 
@@ -47,13 +47,11 @@ func (h *OrderHandler) Store(ctx *gin.Context) {
 		return
 	}
 
-	order, err := h.uc.Store(oID, *userData)
+	_, err = h.uc.Store(oID, *userData)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(order)
 
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"message": "Order successfully stored",
@@ -70,7 +68,25 @@ func (h *OrderHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"orders": orders,
-	})
+	type orderResponse struct {
+		Number     string    `json:"number"`
+		Status     string    `json:"status"`
+		Accrual    float64   `json:"accrual,omitempty"`
+		UploadedAt time.Time `json:"uploaded_at"`
+	}
+
+	ordersResp := make([]orderResponse, 0, len(orders))
+	for _, o := range orders {
+		resp := orderResponse{
+			Number:     strconv.Itoa(o.ID),
+			Status:     o.Status,
+			UploadedAt: o.UpdatedAt,
+		}
+		if o.Status == "PROCESSED" {
+			resp.Accrual = o.Points
+		}
+		ordersResp = append(ordersResp, resp)
+	}
+
+	ctx.JSON(http.StatusOK, ordersResp)
 }

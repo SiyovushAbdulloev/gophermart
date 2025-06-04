@@ -3,18 +3,35 @@ package order
 import "time"
 
 var (
-	NewStatus        = 0
-	ProcessingStatus = 1
-	InvalidStatus    = 2
-	ProcessedStatus  = 3
+	NewStatus        = "NEW"
+	ProcessingStatus = "PROCESSING"
+	InvalidStatus    = "INVALID"
+	ProcessedStatus  = "PROCESSED"
 )
 
 //easyjson:json
 type Order struct {
 	ID        int       `json:"id"`
 	UserID    int       `json:"user_id"`
-	Points    int64     `json:"points"`
-	Status    int       `json:"status"`
+	Points    float64   `json:"points"`
+	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (o *Order) StatusString() string {
+	if o.Status == NewStatus {
+		return "NEW"
+	}
+	if o.Status == ProcessingStatus {
+		return "PROCESSING"
+	}
+	if o.Status == InvalidStatus {
+		return "INVALID"
+	}
+	if o.Status == ProcessedStatus {
+		return "PROCESSED"
+	}
+
+	return ""
 }

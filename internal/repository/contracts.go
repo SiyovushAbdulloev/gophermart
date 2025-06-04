@@ -16,16 +16,16 @@ type OrderRepository interface {
 	Store(id int, u user.User) (*order.Order, error)
 	GetOrderByID(id int) (*order.Order, error)
 	List(userID int) ([]order.Order, error)
-	UpdateStatus(orderID int, status string) error
+	UpdateStatus(orderID int, status string, points float64) error
 }
 
 type WithDrawRepository interface {
 	List(userID int) ([]withdraw.WithDraw, error)
 	Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error)
-	Sum(id int) (int, error)
+	Sum(id int) (float64, error)
 }
 
 type BalanceRepository interface {
-	GetAmount(id int) (int, error)
-	AddPoints(userID int, amount int) error
+	GetAmount(id int) (float64, error)
+	AddPoints(userID int, amount float64) error
 }

@@ -14,6 +14,6 @@ func New(repo repository.BalanceRepository) *BalanceUsecase {
 	}
 }
 
-func (bu *BalanceUsecase) GetAmount(id int) (int, error) {
+func (bu *BalanceUsecase) GetAmount(id int) (float64, error) {
 	return bu.repo.GetAmount(id)
 }

@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS balances (
     user_id bigint not null,
-    amount bigint default 0
+    amount NUMERIC(10, 2) default 0
 );
 -- +goose StatementEnd
 

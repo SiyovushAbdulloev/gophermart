@@ -10,7 +10,7 @@ import (
 )
 
 func DefineAuthRoutes(app *gin.Engine, handler *auth.AuthHandler) {
-	group := app.Group("/")
+	group := app.Group("/api/user")
 	group.Use(middleware.Guest())
 
 	group.POST("/register", handler.Register)
@@ -18,7 +18,7 @@ func DefineAuthRoutes(app *gin.Engine, handler *auth.AuthHandler) {
 }
 
 func DefineOrderRoutes(app *gin.Engine, handler *order.OrderHandler, secret string, repository repository.AuthRepository) {
-	group := app.Group("/orders")
+	group := app.Group("/api/user/orders")
 	group.Use(middleware.Authenticate(secret, repository))
 
 	group.POST("/", handler.Store)

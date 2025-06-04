@@ -41,9 +41,9 @@ func easyjson163c17a9DecodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 		case "user_id":
 			out.UserID = int(in.Int())
 		case "order":
-			out.Order = int64(in.Int64())
+			out.Order = string(in.String())
 		case "sum":
-			out.Sum = int64(in.Int64())
+			out.Sum = float64(in.Float64())
 		case "created_at":
 			if data := in.Raw(); in.Ok() {
 				in.AddError((out.CreatedAt).UnmarshalJSON(data))
@@ -79,12 +79,12 @@ func easyjson163c17a9EncodeGithubComSiyovushAbdulloevGophermartInternalEntityWit
 	{
 		const prefix string = ",\"order\":"
 		out.RawString(prefix)
-		out.Int64(int64(in.Order))
+		out.String(string(in.Order))
 	}
 	{
 		const prefix string = ",\"sum\":"
 		out.RawString(prefix)
-		out.Int64(int64(in.Sum))
+		out.Float64(float64(in.Sum))
 	}
 	{
 		const prefix string = ",\"created_at\":"

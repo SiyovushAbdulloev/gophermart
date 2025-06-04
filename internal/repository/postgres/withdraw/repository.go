@@ -2,10 +2,12 @@ package auth
 
 import (
 	"context"
+	sql2 "database/sql"
 	"github.com/Masterminds/squirrel"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/user"
 	"github.com/SiyovushAbdulloev/gophermart/internal/entity/withdraw"
 	"github.com/SiyovushAbdulloev/gophermart/pkg/postgres"
+	"log"
 	"time"
 )
 
@@ -60,6 +62,7 @@ func (repo *WithDrawRepository) List(userID int) ([]withdraw.WithDraw, error) {
 }
 
 func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*withdraw.WithDraw, error) {
+	log.Printf("📝 INSERT withdraw: user_id=%d, order=%s, sum=%.2f", user.ID, w.Order, w.Sum)
 	ctx := context.Background()
 	tx, err := repo.DB.Pool.Begin(ctx)
 	if err != nil {
@@ -104,7 +107,7 @@ func (repo *WithDrawRepository) Store(w withdraw.WithDraw, user user.User) (*wit
 	return &w, nil
 }
 
-func (repo *WithDrawRepository) Sum(id int) (int, error) {
+func (repo *WithDrawRepository) Sum(id int) (float64, error) {
 	ctx := context.Background()
 	tx, err := repo.DB.Pool.Begin(ctx)
 	if err != nil {
@@ -122,11 +125,19 @@ func (repo *WithDrawRepository) Sum(id int) (int, error) {
 		return 0, err
 	}
 
-	var sum int
+	var sum sql2.NullFloat64
 	err = tx.QueryRow(ctx, sql, args...).Scan(&sum)
 	if err != nil {
 		return 0, err
 	}
 
-	return sum, nil
+	if err = tx.Commit(ctx); err != nil {
+		return 0, err
+	}
+
+	if sum.Valid {
+		return sum.Float64, nil
+	}
+
+	return 0, nil
 }

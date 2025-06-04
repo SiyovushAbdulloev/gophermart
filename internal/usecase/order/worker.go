@@ -2,6 +2,7 @@ package order
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -58,15 +59,19 @@ func (w *Worker) Process(ctx context.Context, o *order.Order) {
 			}
 
 			log.Printf("ℹ️ order %s status: %s", res.Order, res.Status)
+			log.Println("ORDER:", res)
 
 			switch res.Status {
 			case "INVALID":
-				_ = w.repo.UpdateStatus(o.ID, "INVALID")
+				_ = w.repo.UpdateStatus(o.ID, "INVALID", float64(0))
 				return
 			case "PROCESSED":
-				_ = w.repo.UpdateStatus(o.ID, "PROCESSED")
+				_ = w.repo.UpdateStatus(o.ID, "PROCESSED", res.Accrual)
 				if res.Accrual > 0 {
-					_ = w.balanceRepo.AddPoints(o.UserID, int(res.Accrual))
+					err = w.balanceRepo.AddPoints(o.UserID, res.Accrual)
+					if err != nil {
+						fmt.Println("Error of PROCESSING:", err)
+					}
 				}
 				return
 			case "PROCESSING":

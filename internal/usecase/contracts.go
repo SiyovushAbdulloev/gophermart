@@ -21,9 +21,9 @@ type OrderUsecase interface {
 type WithdrawUsecase interface {
 	List(userID int) ([]withdraw.WithDraw, error)
 	Store(w withdraw.WithDraw, u user.User) (*withdraw.WithDraw, error)
-	Sum(id int) (int, error)
+	Sum(id int) (float64, error)
 }
 
 type BalanceUsecase interface {
-	GetAmount(id int) (int, error)
+	GetAmount(id int) (float64, error)
 }

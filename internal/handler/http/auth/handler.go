@@ -34,7 +34,13 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 
 	existedUser, _ := h.uc.GetUserByEmail(u.Email)
 	if existedUser != nil {
-		ctx.JSON(http.StatusConflict, gin.H{"error": "User with this email already exists"})
+		token, err := h.uc.Login(&u)
+		if err != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.SetCookie("Authorization", token, 3600, "/", "", false, true)
+		ctx.JSON(http.StatusOK, gin.H{"token": token})
 		return
 	}
 
@@ -44,9 +50,9 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": token,
-	})
+	ctx.SetCookie("Authorization", token, 3600, "/", "", false, true)
+
+	ctx.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func (h *AuthHandler) Login(ctx *gin.Context) {
@@ -70,7 +76,7 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": token,
-	})
+	ctx.SetCookie("Authorization", token, 3600, "/", "", false, true)
+
+	ctx.JSON(http.StatusOK, gin.H{"token": token})
 }
